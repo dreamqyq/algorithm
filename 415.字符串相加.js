@@ -11,19 +11,19 @@
  * @return {string}
  */
 var addStrings = function (num1, num2) {
-  var len1 = num1.length;
-  var len2 = num2.length;
-  var maxLength = len1 > len2 ? len1 : len2;
-  var result = "";
-  for (let i = 0; i < maxLength; i++) {
-    var s1 = parseInt(num1[len1 - 1 - i]) || 0;
-    var s2 = parseInt(num2[len2 - 1 - i]) || 0;
-    if (result.length > i) {
-      result = s1 + s2 + 1 + result.substr(1);
-    } else {
-      result = s1 + s2 + result;
-    }
+  let i = num1.length - 1,
+    j = num2.length - 1,
+    add = 0;
+  const ans = [];
+  while (i >= 0 || j >= 0 || add != 0) {
+    const x = i >= 0 ? num1.charAt(i) - "0" : 0;
+    const y = j >= 0 ? num2.charAt(j) - "0" : 0;
+    const result = x + y + add;
+    ans.push(result % 10);
+    add = Math.floor(result / 10);
+    i -= 1;
+    j -= 1;
   }
-  return result;
+  return ans.reverse().join("");
 };
 // @lc code=end
