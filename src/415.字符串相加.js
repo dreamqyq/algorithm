@@ -27,3 +27,5 @@ var addStrings = function (num1, num2) {
   return ans.reverse().join("");
 };
 // @lc code=end
+
+module.exports = addStrings;
