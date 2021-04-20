@@ -10,16 +10,13 @@
  * @return {boolean}
  */
 var isPalindrome = function (x) {
-  if (x < 0) return false;
-  var str = x.toString();
-  var len = str.length;
-  if (len === 0) return true;
-  for (let i = 0; i < (len - (len % 2)) / 2; i++) {
-    if (str.charAt(i) !== str.charAt(len - 1 - i)) {
-      return false;
-    }
+  if (x < 0 || (x !== 0 && x % 10 === 0)) return false;
+  var revertNum = 0;
+  while (x > revertNum) {
+    revertNum = revertNum * 10 + (x % 10);
+    x = Math.floor(x / 10);
   }
-  return true;
+  return x === revertNum || x === Math.floor(revertNum / 10);
 };
 // @lc code=end
 
