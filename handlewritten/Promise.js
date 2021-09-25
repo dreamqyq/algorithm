@@ -1,4 +1,6 @@
 /**
+ * Promise/A+ ===> https://promisesaplus.com/
+ *
  * const fn = new Promise2((resolve,reject)=>{
  * 	console.log('hi')
  * 	if (Math.random()>0.5){
@@ -20,24 +22,45 @@
  */
 
 class Promise2 {
-  successQueue = [];
-  failQueue = [];
+  state = 'pending';
+  eventQueue = [];
   constructor(fn) {
-    const resolve = res => {
-      setTimeout(() => {
-        this.successQueue.forEach(cb => cb(res));
+    if (typeof fn !== 'function') {
+      throw new Error('Promise only receive function');
+    }
+    fn(this.resolve.bind(this), this.reject.bind(this));
+  }
+  resolve(result) {
+    if (this.state !== 'pending') return;
+    this.state = 'fulfilled';
+    setTimeout(() => {
+      this.eventQueue.forEach(handles => {
+        if (typeof handles[0] === 'function') {
+          handles[0].call(undefined, result);
+        }
       });
-    };
-    const reject = err => {
-      setTimeout(() => {
-        this.failQueue.forEach(cb => cb(err));
+    });
+  }
+  reject(reason) {
+    if (this.state !== 'pending') return;
+    this.state = 'rejected';
+    setTimeout(() => {
+      this.eventQueue.forEach(handles => {
+        if (typeof handles[1] === 'function') {
+          handles[1].call(undefined, reason);
+        }
       });
-    };
-    fn(resolve, reject);
+    });
   }
   then(resolve, reject) {
-    this.successQueue.push(resolve);
-    this.failQueue.push(reject);
+    const handles = [];
+    if (typeof resolve === 'function') {
+      handles[0] = resolve;
+    }
+    if (typeof reject === 'function') {
+      handles[1] = reject;
+    }
+    this.eventQueue.push(handles);
     return this;
   }
 }
