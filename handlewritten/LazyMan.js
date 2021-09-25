@@ -71,4 +71,53 @@ function LazyMan1(name) {
   return api;
 }
 
-module.exports = LazyMan1;
+class LazyManClass {
+  constructor(name) {
+    this.name = name;
+    this.say = this.say.bind(this);
+    this.next = this.next.bind(this);
+    this.queue = [this.say];
+    setTimeout(this.next, 0);
+  }
+  next() {
+    const first = this.queue.shift();
+    first?.();
+  }
+  say() {
+    console.log(`你好，我是${this.name}`);
+    this.next();
+  }
+  eat(type) {
+    this.queue.push(() => {
+      const map = {
+        launch: '午餐',
+        supper: '晚餐'
+      };
+      console.log(`吃${map[type]}`);
+      this.next();
+    });
+    return this;
+  }
+  commonSleep(second) {
+    setTimeout(() => {
+      console.log(`我醒了，我刚睡了 ${second} 秒`);
+      this.next();
+    }, second * 1000);
+  }
+  sleep(second) {
+    this.queue.push(() => {
+      this.commonSleep(second);
+    });
+    return this;
+  }
+  sleepFirst(second) {
+    this.queue.unshift(() => {
+      this.commonSleep(second);
+    });
+    return this;
+  }
+}
+
+const LazyMan2 = name => new LazyManClass(name);
+
+module.exports = LazyMan2;
