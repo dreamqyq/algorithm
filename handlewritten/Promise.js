@@ -22,31 +22,31 @@
  */
 
 class Promise2 {
-  state = 'pending';
+  state = "pending";
   eventQueue = [];
   constructor(fn) {
-    if (typeof fn !== 'function') {
-      throw new Error('Promise only receive function');
+    if (typeof fn !== "function") {
+      throw new Error("Promise only receive function");
     }
     fn(this.resolve.bind(this), this.reject.bind(this));
   }
   resolve(result) {
-    if (this.state !== 'pending') return;
-    this.state = 'fulfilled';
     setTimeout(() => {
-      this.eventQueue.forEach(handles => {
-        if (typeof handles[0] === 'function') {
+      if (this.state !== "pending") return;
+      this.state = "fulfilled";
+      this.eventQueue.forEach((handles) => {
+        if (typeof handles[0] === "function") {
           handles[0].call(undefined, result);
         }
       });
     });
   }
   reject(reason) {
-    if (this.state !== 'pending') return;
-    this.state = 'rejected';
     setTimeout(() => {
-      this.eventQueue.forEach(handles => {
-        if (typeof handles[1] === 'function') {
+      if (this.state !== "pending") return;
+      this.state = "rejected";
+      this.eventQueue.forEach((handles) => {
+        if (typeof handles[1] === "function") {
           handles[1].call(undefined, reason);
         }
       });
@@ -54,10 +54,10 @@ class Promise2 {
   }
   then(resolve, reject) {
     const handles = [];
-    if (typeof resolve === 'function') {
+    if (typeof resolve === "function") {
       handles[0] = resolve;
     }
-    if (typeof reject === 'function') {
+    if (typeof reject === "function") {
       handles[1] = reject;
     }
     this.eventQueue.push(handles);
@@ -67,7 +67,7 @@ class Promise2 {
 
 const fn = new Promise2((resolve, reject) => {
   const n = Math.random();
-  console.log('hi');
+  console.log("hi");
   if (n > 0.5) {
     resolve(`success--${n}`);
   } else {
@@ -76,17 +76,17 @@ const fn = new Promise2((resolve, reject) => {
 });
 
 fn.then(
-  res => {
-    console.log('then success res', res);
+  (res) => {
+    console.log("then success res", res);
   },
-  err => {
-    console.log('then fail err', err);
+  (err) => {
+    console.log("then fail err", err);
   }
 ).then(
   () => {
-    console.log('then success 2');
+    console.log("then success 2");
   },
   () => {
-    console.log('then fail 2');
+    console.log("then fail 2");
   }
 );
