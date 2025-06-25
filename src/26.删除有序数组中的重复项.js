@@ -5,35 +5,20 @@
  */
 
 // @lc code=start
-function check(l, item) {
-  for (let i = 0; i < l.length; i++) {
-    if (l[i] === item) {
-      return true;
+var removeDuplicates = function(nums) {
+    const n = nums.length;
+    if (n === 0) {
+        return 0;
     }
-  }
-  return false;
-}
-
-/**
- * @param {number[]} nums
- * @return {number}
- */
-var removeDuplicates = function (nums) {
-  const result = [];
-  for (let i = 0; i < nums.length; i++) {
-    if (result.length === 0) {
-      result.push(nums[i]);
-    } else {
-      if (!check(result, nums[i])) {
-        result.push(nums[i]);
-      }
+    let fast = 1, slow = 1;
+    while (fast < n) {
+        if (nums[fast] !== nums[fast - 1]) {
+            nums[slow] = nums[fast];
+            ++slow;
+        }
+        ++fast;
     }
-  }
-  const length = result.length;
-  nums.length = length;
-  for (let j = 0; j < length; j++) {
-    nums[j] = result[j];
-  }
-  return result.length;
+    return slow;
 };
+
 // @lc code=end
